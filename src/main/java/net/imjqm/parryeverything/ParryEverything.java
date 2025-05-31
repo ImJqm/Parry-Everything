@@ -1,6 +1,8 @@
 package net.imjqm.parryeverything; 
 
 import com.mojang.logging.LogUtils;
+
+import net.imjqm.parryeverything.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.food.FoodProperties;
@@ -41,6 +43,8 @@ public class ParryEverything
     {
         IEventBus modEventBus = context.getModEventBus();
         
+        ModItems.regiser(modEventBus);
+        
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
@@ -65,6 +69,10 @@ public class ParryEverything
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
+      if (event.getTabKey() == CreativeModeTabs.COMBAT) {
+        event.accept(ModItems.KUSABIMARU);
+        event.accept(ModItems.SHINOBI_PROSTHETIC);
+      }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
