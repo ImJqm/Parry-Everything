@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.sounds.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -22,21 +23,26 @@ public class ParryItem extends Item{
   
   @Override
   public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-    if (pLevel.isClientSide()) {
-    pPlayer.sendSystemMessage(Component.literal("He fucking right clicked the fucking item"));
-     ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
-     if (itemstack.isEdible()) {
-        if (pPlayer.canEat(itemstack.getFoodProperties(pPlayer).canAlwaysEat())) {
-           pPlayer.startUsingItem(pUsedHand);
-           return InteractionResultHolder.consume(itemstack);
-        } else {
-           return InteractionResultHolder.fail(itemstack);
-        }
-     } else {
-        return InteractionResultHolder.pass(pPlayer.getItemInHand(pUsedHand));
-     }
+    ParryData.LAST_PARRY.put(pPlayer.getUUID(), pLevel.getGameTime());
+    if (pLevel.isClientSide() && ParryData.LAST_HIT_TICK.get(pPlayer.getUUID())!=null) {
+      Long currTime = pLevel.getGameTime();
+      Long hitTime = ParryData.LAST_HIT_TICK.get(pPlayer.getUUID());
+      
+      boolean result = (Math.abs(currTime-hitTime)<=20) ; 
+      if (result) {
+        pPlayer.sendSystemMessage(Component.literal("Parried on item click"));
+        DoParry(pPlayer, pLevel);
+      }
     }
     return InteractionResultHolder.pass(pPlayer.getItemInHand(pUsedHand));
+
+    
+
+  }
+
+  public static void DoParry(Player pPlayer, Level pLevel) {
+      pPlayer.sendSystemMessage(Component.literal("Parried"));
+      pLevel.playSound(pPlayer, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), SoundEvents.ANVIL_PLACE, SoundSource.MASTER, 1f, 1f);
   }
 
 //public static void onRightClick(PlayerInteractEvent.RightClickItem event) {
