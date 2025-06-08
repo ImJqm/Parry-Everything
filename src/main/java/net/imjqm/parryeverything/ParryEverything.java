@@ -3,6 +3,7 @@ package net.imjqm.parryeverything;
 import com.mojang.logging.LogUtils;
 
 import net.imjqm.parryeverything.item.ModItems;
+import net.imjqm.parryeverything.sound.ModSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.food.FoodProperties;
@@ -48,7 +49,7 @@ public class ParryEverything
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-
+        ModSounds.register(modEventBus);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 

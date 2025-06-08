@@ -1,6 +1,7 @@
 package net.imjqm.parryeverything.item.custom;
 
 import net.imjqm.parryeverything.data.ParryData;
+import net.imjqm.parryeverything.sound.ModSounds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 public class ParryItem extends Item{
   public ParryItem(Properties pProperties) {
@@ -23,16 +25,25 @@ public class ParryItem extends Item{
   
   @Override
   public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+    ItemStack stack = pPlayer.getItemInHand(pUsedHand);
+    if (pPlayer.getCooldowns().isOnCooldown(stack.getItem())) {
+      return InteractionResultHolder.pass(stack);
+    }
+    pPlayer.getCooldowns().addCooldown(stack.getItem(),40);
     ParryData.LAST_PARRY.put(pPlayer.getUUID(), pLevel.getGameTime());
     if (pLevel.isClientSide() && ParryData.LAST_HIT_TICK.get(pPlayer.getUUID())!=null) {
+      pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), ModSounds.PARRY_DEFLECT.get(), SoundSource.BLOCKS, 1f, 1f);
       Long currTime = pLevel.getGameTime();
       Long hitTime = ParryData.LAST_HIT_TICK.get(pPlayer.getUUID());
       
-      boolean result = (Math.abs(currTime-hitTime)<=20) ; 
-      if (result) {
+      //boolean result = (Math.abs(currTime-hitTime)<=20) ; 
+      //optional parry timing when right clicked after being hitTime
+      //Cannot implement no damage
+      
+      /*if (result) {
         pPlayer.sendSystemMessage(Component.literal("Parried on item click"));
         DoParry(pPlayer, pLevel);
-      }
+      }*/
     }
     return InteractionResultHolder.pass(pPlayer.getItemInHand(pUsedHand));
 
@@ -40,9 +51,24 @@ public class ParryItem extends Item{
 
   }
 
-  public static void DoParry(Player pPlayer, Level pLevel) {
+  public static void DoParry(Player pPlayer, Level pLevel, LivingEntity attacker) {
       pPlayer.sendSystemMessage(Component.literal("Parried"));
-      pLevel.playSound(pPlayer, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), SoundEvents.ANVIL_PLACE, SoundSource.MASTER, 1f, 1f);
+      if (attacker != null) {
+          double dx = attacker.getX() - pPlayer.getX();
+          double dz = attacker.getZ() - pPlayer.getZ();
+          attacker.knockback(1.5F, -dx, -dz);
+          ItemStack stackmain = pPlayer.getItemInHand(InteractionHand.MAIN_HAND);
+          ItemStack stackoff = pPlayer.getItemInHand(InteractionHand.OFF_HAND);
+          if (stackmain.getItem() instanceof ParryItem) {
+              pPlayer.getCooldowns().removeCooldown(stackmain.getItem());
+          }
+          if (stackoff.getItem() instanceof ParryItem) {
+              pPlayer.getCooldowns().removeCooldown(stackoff.getItem());
+          }
+}
+      if (!pLevel.isClientSide()) {
+          pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), ModSounds.PARRY_DEFLECT.get(), SoundSource.MASTER, 1f, 1f);
+      }
   }
 
 //public static void onRightClick(PlayerInteractEvent.RightClickItem event) {

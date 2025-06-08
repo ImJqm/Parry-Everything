@@ -1,0 +1,8 @@
+{
+  "parry_deflect": {
+    "subtitles": "sounds.parryeverything.parry_deflect",
+    "sounds": [
+      "parryeverything:parry_deflect"
+    ]
+  }
+}
