@@ -69,9 +69,9 @@ public class ParryItem extends Item{
           }
 }
       if (!pLevel.isClientSide()) {
-          if (pLevel instanceof ServerLevel serverLevel) {
+          /*if (pLevel instanceof ServerLevel serverLevel) {
               serverLevel.sendParticles(ModParticles.PARRY_SPARK.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-          }
+          }*/
           pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), ModSounds.PARRY_DEFLECT.get(), SoundSource.MASTER, 1f, 1f);
       }
   }

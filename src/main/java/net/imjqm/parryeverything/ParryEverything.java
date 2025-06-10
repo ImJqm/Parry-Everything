@@ -51,7 +51,7 @@ public class ParryEverything
         modEventBus.addListener(this::commonSetup);
 
         ModSounds.register(modEventBus);
-
+          
         ModParticles.register(modEventBus);
     
         // Register ourselves for server and other game events we are interested in
