@@ -3,6 +3,7 @@ package net.imjqm.parryeverything;
 import com.mojang.logging.LogUtils;
 
 import net.imjqm.parryeverything.item.ModItems;
+import net.imjqm.parryeverything.particle.ModParticles;
 import net.imjqm.parryeverything.sound.ModSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
@@ -50,6 +51,9 @@ public class ParryEverything
         modEventBus.addListener(this::commonSetup);
 
         ModSounds.register(modEventBus);
+
+        ModParticles.register(modEventBus);
+    
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 

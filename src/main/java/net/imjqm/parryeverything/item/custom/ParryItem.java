@@ -1,8 +1,10 @@
 package net.imjqm.parryeverything.item.custom;
 
 import net.imjqm.parryeverything.data.ParryData;
+import net.imjqm.parryeverything.particle.ModParticles;
 import net.imjqm.parryeverything.sound.ModSounds;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -67,6 +69,9 @@ public class ParryItem extends Item{
           }
 }
       if (!pLevel.isClientSide()) {
+          if (pLevel instanceof ServerLevel serverLevel) {
+              serverLevel.sendParticles(ModParticles.PARRY_SPARK.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+          }
           pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), ModSounds.PARRY_DEFLECT.get(), SoundSource.MASTER, 1f, 1f);
       }
   }
