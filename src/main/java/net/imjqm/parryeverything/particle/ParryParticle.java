@@ -33,6 +33,15 @@ public class ParryParticle extends TextureSheetParticle{
   @Override
   public void tick() {
     super.tick();
+    /*int frame = Math.min(this.age, 10); // Clamp to 0–10
+  
+    System.out.println("[AWESOMEDEBUG] Particle Frame: " + frame + " Particle age: " + this.age + " Particle lifetime: " + this.lifetime + " TextureSprite: " + this.sprite.get(frame,10));
+    this.setSprite(this.sprite.get(frame, 10));
+
+    if(this.age >= this.lifetime) {
+      this.remove();
+    }*/
+
   }
 
   @Override

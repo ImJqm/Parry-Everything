@@ -67,11 +67,45 @@ public class ParryItem extends Item{
           if (stackoff.getItem() instanceof ParryItem) {
               pPlayer.getCooldowns().removeCooldown(stackoff.getItem());
           }
-}
+      }
       if (!pLevel.isClientSide()) {
-          /*if (pLevel instanceof ServerLevel serverLevel) {
-              serverLevel.sendParticles(ModParticles.PARRY_SPARK.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-          }*/
+          if (pLevel instanceof ServerLevel serverLevel) {
+              int time = (int)(pLevel.getGameTime()%10);
+              pPlayer.sendSystemMessage(Component.literal("Played Particle #" + time));
+              switch(time) {
+                  case 0: 
+                      serverLevel.sendParticles(ModParticles.PARRY_SPARK0.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+                      break;
+                  case 1:
+                      serverLevel.sendParticles(ModParticles.PARRY_SPARK1.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+                      break;
+                  case 2:
+                      serverLevel.sendParticles(ModParticles.PARRY_SPARK2.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+                      break;
+                  case 3:
+                      serverLevel.sendParticles(ModParticles.PARRY_SPARK3.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+                      break;
+                  case 4:
+                      serverLevel.sendParticles(ModParticles.PARRY_SPARK4.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+                      break;
+                  case 5:
+                      serverLevel.sendParticles(ModParticles.PARRY_SPARK5.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+                      break;
+                  case 6:
+                      serverLevel.sendParticles(ModParticles.PARRY_SPARK6.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+                      break;
+                  case 7:
+                      serverLevel.sendParticles(ModParticles.PARRY_SPARK7.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+                      break;
+                  case 8:
+                      serverLevel.sendParticles(ModParticles.PARRY_SPARK8.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+                      break;
+                  case 9:
+                      serverLevel.sendParticles(ModParticles.PARRY_SPARK9.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
+                      break;
+
+              }
+          }
           pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), ModSounds.PARRY_DEFLECT.get(), SoundSource.MASTER, 1f, 1f);
       }
   }
