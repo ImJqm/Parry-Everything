@@ -15,12 +15,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.sounds.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.imjqm.parryeverything.event.DelayedActionHandler;
 
+@Mod.EventBusSubscriber(modid = "parryeverything", bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ParryItem extends Item{
+
+  public static DelayedActionHandler handler = new DelayedActionHandler();
+
   public ParryItem(Properties pProperties) {
     super(pProperties);
   }
@@ -70,45 +76,33 @@ public class ParryItem extends Item{
       }
       if (!pLevel.isClientSide()) {
           if (pLevel instanceof ServerLevel serverLevel) {
-              int time = (int)(pLevel.getGameTime()%10);
-              pPlayer.sendSystemMessage(Component.literal("Played Particle #" + time));
-              switch(time) {
-                  case 0: 
-                      serverLevel.sendParticles(ModParticles.PARRY_SPARK0.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-                      break;
-                  case 1:
-                      serverLevel.sendParticles(ModParticles.PARRY_SPARK1.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-                      break;
-                  case 2:
-                      serverLevel.sendParticles(ModParticles.PARRY_SPARK2.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-                      break;
-                  case 3:
-                      serverLevel.sendParticles(ModParticles.PARRY_SPARK3.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-                      break;
-                  case 4:
-                      serverLevel.sendParticles(ModParticles.PARRY_SPARK4.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-                      break;
-                  case 5:
-                      serverLevel.sendParticles(ModParticles.PARRY_SPARK5.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-                      break;
-                  case 6:
-                      serverLevel.sendParticles(ModParticles.PARRY_SPARK6.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-                      break;
-                  case 7:
-                      serverLevel.sendParticles(ModParticles.PARRY_SPARK7.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-                      break;
-                  case 8:
-                      serverLevel.sendParticles(ModParticles.PARRY_SPARK8.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-                      break;
-                  case 9:
-                      serverLevel.sendParticles(ModParticles.PARRY_SPARK9.get(), pPlayer.getX(), pPlayer.getY()+1, pPlayer.getZ(), 1, 0, 0, 0, 0);
-                      break;
-
-              }
+              int time = (int)((pLevel.getGameTime())%10);
+             // pPlayer.sendSystemMessage(Component.literal("Played Particle #" + time + " the time was " + pLevel.getGameTime()));
+              handler.setPlayer(pPlayer);
+              handler.setTicksRemaining(10);
+              handler.setMaxTicks(10);
+              handler.setServerLevel(serverLevel);
+              handler.setX(pPlayer.getX());
+              handler.setY(pPlayer.getY());
+              handler.setZ(pPlayer.getZ());
+              handler.start();
           }
           pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), ModSounds.PARRY_DEFLECT.get(), SoundSource.MASTER, 1f, 1f);
       }
   }
+  
+  @SubscribeEvent
+  public static void onServerTick(TickEvent.ServerTickEvent event) {
+    if (event.phase == TickEvent.Phase.END) {
+      handler.tick();
+    }
+  }
+
+
+
+
+
+
 
 //public static void onRightClick(PlayerInteractEvent.RightClickItem event) {
 //Player player = event.getEntity();

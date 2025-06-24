@@ -16,12 +16,12 @@ public class ParryParticle extends TextureSheetParticle{
   private final SpriteSet sprite;
   public ParryParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, SpriteSet sprite) {
     super(level, x, y, z, vx, vy, vz);
-    this.lifetime=10;
+    this.lifetime=1;
     this.setSize(1, 1);
     this.xd=vx;
     this.yd=vy;
     this.zd=vz;
-    this.quadSize *= 9.85F;
+    this.quadSize = 1.5F;
     this.hasPhysics = false;
     this.rCol=1f;
     this.gCol=1f;
@@ -33,6 +33,7 @@ public class ParryParticle extends TextureSheetParticle{
   @Override
   public void tick() {
     super.tick();
+    this.remove();
     /*int frame = Math.min(this.age, 10); // Clamp to 0–10
   
     System.out.println("[AWESOMEDEBUG] Particle Frame: " + frame + " Particle age: " + this.age + " Particle lifetime: " + this.lifetime + " TextureSprite: " + this.sprite.get(frame,10));
