@@ -64,7 +64,10 @@ public class ParryItem extends Item{
       if (attacker != null) {
           double dx = attacker.getX() - pPlayer.getX();
           double dz = attacker.getZ() - pPlayer.getZ();
-          attacker.knockback(1.5F, -dx, -dz);
+          //attacker.knockback(1.5F, -dx, -dz);
+          attacker.setDeltaMovement(dx * 0.9, 0.1, dz * 0.9);
+          attacker.hurtMarked = true; // flag entity for movement update
+          pPlayer.sendSystemMessage(Component.literal("Parried attacker: " + attacker.getName().getString()));
           ItemStack stackmain = pPlayer.getItemInHand(InteractionHand.MAIN_HAND);
           ItemStack stackoff = pPlayer.getItemInHand(InteractionHand.OFF_HAND);
           if (stackmain.getItem() instanceof ParryItem) {
