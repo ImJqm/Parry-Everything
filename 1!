@@ -51,26 +51,13 @@ public class ParryItem extends Item{
     if (pPlayer.getCooldowns().isOnCooldown(stack.getItem())) {
       return InteractionResultHolder.pass(stack);
     }
-    if (pLevel.isClientSide()) {
-      var animation = (ModifierLayer<IAnimation>)PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) pPlayer).get(new ResourceLocation(ParryEverything.MODID, "animation"));
-      if (animation != null) {
-          //You can set an animation from anywhere ON THE CLIENT
-          //Do not attempt to do this on a server, that will only fail
-
-          animation.setAnimation(new KeyframeAnimationPlayer(PlayerAnimationRegistry.getAnimation(new ResourceLocation("parryeverything", "parry"))));
-          //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
-          //See javadoc for details
-      }
-
-    }
-   
     pPlayer.getCooldowns().addCooldown(stack.getItem(),40);
     ParryData.LAST_PARRY.put(pPlayer.getUUID(), pLevel.getGameTime());
     if (pLevel.isClientSide() && ParryData.LAST_HIT_TICK.get(pPlayer.getUUID())!=null) {
       pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), ModSounds.PARRY_DEFLECT.get(), SoundSource.BLOCKS, 1f, 1f);
       Long currTime = pLevel.getGameTime();
       Long hitTime = ParryData.LAST_HIT_TICK.get(pPlayer.getUUID());
-     
+      
       //boolean result = (Math.abs(currTime-hitTime)<=20) ; 
       //optional parry timing when right clicked after being hitTime
       //Cannot implement no damage
@@ -118,6 +105,16 @@ public class ParryItem extends Item{
               handler.start();
           }
           pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), ModSounds.PARRY_DEFLECT.get(), SoundSource.MASTER, 1f, 1f);
+          var animation = (ModifierLayer<IAnimation>)PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(new ResourceLocation(ParryEverything.MODID, "animation"));
+          if (animation != null) {
+              //You can set an animation from anywhere ON THE CLIENT
+              //Do not attempt to do this on a server, that will only fail
+
+              animation.setAnimation(new KeyframeAnimationPlayer(PlayerAnimationRegistry.getAnimation(new ResourceLocation("parryeverything", "parry"))));
+              //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
+              //See javadoc for details
+          }
+
       }
   }
   
