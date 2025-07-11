@@ -5,6 +5,7 @@ import net.imjqm.parryeverything.particle.ModParticles;
 import net.imjqm.parryeverything.sound.ModSounds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -20,7 +21,13 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 import net.imjqm.parryeverything.event.DelayedActionHandler;
+import net.imjqm.parryeverything.network.ModNetworking;
+import net.imjqm.parryeverything.network.PlayAnimationPacket;
+
+import java.util.UUID;
+
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
@@ -51,7 +58,22 @@ public class ParryItem extends Item{
     if (pPlayer.getCooldowns().isOnCooldown(stack.getItem())) {
       return InteractionResultHolder.pass(stack);
     }
-    if (pLevel.isClientSide()) {
+    
+    UUID playerUUID = pPlayer.getUUID();
+    String animationId = "parry";
+
+    if (!pPlayer.level().isClientSide() && pPlayer instanceof ServerPlayer serverPlayer) {
+        ModNetworking.CHANNEL.send(
+            PacketDistributor.TRACKING_ENTITY.with(() -> serverPlayer),
+            new PlayAnimationPacket(serverPlayer.getUUID(), animationId)
+        );
+        ModNetworking.CHANNEL.send(
+            PacketDistributor.PLAYER.with(() -> serverPlayer),
+            new PlayAnimationPacket(serverPlayer.getUUID(), animationId)
+        );
+    }
+
+    /*if (pLevel.isClientSide()) {
       var animation = (ModifierLayer<IAnimation>)PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) pPlayer).get(new ResourceLocation(ParryEverything.MODID, "animation"));
       if (animation != null) {
           //You can set an animation from anywhere ON THE CLIENT
@@ -62,7 +84,7 @@ public class ParryItem extends Item{
           //See javadoc for details
       }
 
-    }
+    }*/
    
     pPlayer.getCooldowns().addCooldown(stack.getItem(),40);
     ParryData.LAST_PARRY.put(pPlayer.getUUID(), pLevel.getGameTime());
