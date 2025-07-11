@@ -2,6 +2,8 @@ package net.imjqm.parryeverything;
 
 import com.mojang.logging.LogUtils;
 
+import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
+import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.imjqm.parryeverything.item.ModItems;
 import net.imjqm.parryeverything.network.ModNetworking;
 import net.imjqm.parryeverything.particle.ModParticles;

@@ -10,12 +10,16 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.sounds.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -108,20 +112,32 @@ public class ParryItem extends Item{
 
   }
 
-  public static void DoParry(Player pPlayer, Level pLevel, LivingEntity attacker) {
+  public static void DoParry(Player pPlayer, Level pLevel, Entity attacker) {
       pPlayer.sendSystemMessage(Component.literal("Parried"));
-      if (attacker != null) {
-          double dx = attacker.getX() - pPlayer.getX();
-          double dz = attacker.getZ() - pPlayer.getZ();
-          //attacker.knockback(1.5F, -dx, -dz);
-          attacker.setDeltaMovement(dx * 0.9, 0.1, dz * 0.9);
-          attacker.hurtMarked = true; // flag entity for movement update
-          pPlayer.sendSystemMessage(Component.literal("Parried attacker: " + attacker.getName().getString()));
+      if (attacker != null ) {
+
+          if (attacker instanceof LivingEntity livingAttacker) {
+              double dx = livingAttacker.getX() - pPlayer.getX();
+              double dz = livingAttacker.getZ() - pPlayer.getZ();
+              //livingAttacker.knockback(1.5F, -dx, -dz);
+              livingAttacker.setDeltaMovement(dx * 0.9, 0.1, dz * 0.9);
+              livingAttacker.hurtMarked = true; // flag entity for movement update
+              pPlayer.sendSystemMessage(Component.literal("Parried livingAttacker: " + livingAttacker.getName().getString()));
+
+          } else if (attacker instanceof Arrow proj) {
+              Arrow arrow = new Arrow(pLevel, pPlayer);
+              Vec3 lookVec = pPlayer.getLookAngle();
+              arrow.shoot(lookVec.x(), lookVec.y(), lookVec.z(), 2.0f, 0.0f);
+              pLevel.addFreshEntity(arrow);
+          }
+
           ItemStack stackmain = pPlayer.getItemInHand(InteractionHand.MAIN_HAND);
           ItemStack stackoff = pPlayer.getItemInHand(InteractionHand.OFF_HAND);
+
           if (stackmain.getItem() instanceof ParryItem) {
               pPlayer.getCooldowns().removeCooldown(stackmain.getItem());
           }
+
           if (stackoff.getItem() instanceof ParryItem) {
               pPlayer.getCooldowns().removeCooldown(stackoff.getItem());
           }
