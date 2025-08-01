@@ -5,7 +5,8 @@ Current Features
 - Parried LivingEntity's are knocked Back
 - Parried Arrows are deflected the way you are looking
 - Parry's have a particle animation
-  **TODO**
+
+**TODO**
 --------------------------------------------------------------------------
 - 3d model/Texture for the shinobi prosthetic
 - Configuration System
