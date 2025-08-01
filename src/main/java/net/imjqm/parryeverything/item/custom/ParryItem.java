@@ -89,7 +89,7 @@ public class ParryItem extends Item{
       }
 
     }*/
-   
+    pPlayer.swing(pUsedHand);
     pPlayer.getCooldowns().addCooldown(stack.getItem(),40);
     ParryData.LAST_PARRY.put(pPlayer.getUUID(), pLevel.getGameTime());
     if (pLevel.isClientSide() && ParryData.LAST_HIT_TICK.get(pPlayer.getUUID())!=null) {
