@@ -1,11 +1,11 @@
-*** Current Features ***
+Current Features 
 --------------------------------------------------------------------------
 - "Shinobi Prosthetic" Item -- Lets you parry using right click
 - Parry Animation Synced across clients
 - Parried LivingEntity's are knocked Back
 - Parried Arrows are deflected the way you are looking
 - Parry's have a particle animation
-*** TODO ***
+  **TODO**
 --------------------------------------------------------------------------
 - 3d model/Texture for the shinobi prosthetic
 - Configuration System
