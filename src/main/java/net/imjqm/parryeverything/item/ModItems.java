@@ -2,6 +2,7 @@ package net.imjqm.parryeverything.item;
 
 import net.imjqm.parryeverything.ParryEverything;
 import net.imjqm.parryeverything.item.custom.ParryItem;
+import net.imjqm.parryeverything.item.custom.FireItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.SwordItem;
@@ -15,6 +16,8 @@ public class ModItems {
   public static final RegistryObject<Item> KUSABIMARU = ITEMS.register("kusabimaru", () -> new SwordItem(Tiers.NETHERITE,16,3,new Item.Properties()) );
 
   public static final RegistryObject<Item> SHINOBI_PROSTHETIC = ITEMS.register("shinobi_prosthetic",() -> new ParryItem(new Item.Properties()));
+
+  public static final RegistryObject<Item> FLAME_VENT = ITEMS.register("flame_vent", () -> new FireItem(new Item.Properties()));
 
   
   public static void regiser(IEventBus eventBus) {

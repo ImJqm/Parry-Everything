@@ -60,6 +60,7 @@ public class ParryItem extends Item{
   public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
     ItemStack stack = pPlayer.getItemInHand(pUsedHand);
     if (pPlayer.getCooldowns().isOnCooldown(stack.getItem())) {
+      pPlayer.sendSystemMessage(Component.literal("You are on cooldown"));
       return InteractionResultHolder.pass(stack);
     }
     
@@ -89,8 +90,9 @@ public class ParryItem extends Item{
       }
 
     }*/
-    pPlayer.swing(pUsedHand);
+  //  pPlayer.swing(pUsedHand);
     pPlayer.getCooldowns().addCooldown(stack.getItem(),40);
+    pPlayer.sendSystemMessage(Component.literal("I just set ur cooldown to 40 ticks"));
     ParryData.LAST_PARRY.put(pPlayer.getUUID(), pLevel.getGameTime());
     if (pLevel.isClientSide() && ParryData.LAST_HIT_TICK.get(pPlayer.getUUID())!=null) {
       pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), ModSounds.PARRY_DEFLECT.get(), SoundSource.BLOCKS, 1f, 1f);
@@ -115,7 +117,6 @@ public class ParryItem extends Item{
   public static void DoParry(Player pPlayer, Level pLevel, Entity attacker) {
       pPlayer.sendSystemMessage(Component.literal("Parried"));
       if (attacker != null ) {
-
           if (attacker instanceof LivingEntity livingAttacker) {
               double dx = livingAttacker.getX() - pPlayer.getX();
               double dz = livingAttacker.getZ() - pPlayer.getZ();
@@ -131,16 +132,6 @@ public class ParryItem extends Item{
               pLevel.addFreshEntity(arrow);
           }
 
-          ItemStack stackmain = pPlayer.getItemInHand(InteractionHand.MAIN_HAND);
-          ItemStack stackoff = pPlayer.getItemInHand(InteractionHand.OFF_HAND);
-
-          if (stackmain.getItem() instanceof ParryItem) {
-              pPlayer.getCooldowns().removeCooldown(stackmain.getItem());
-          }
-
-          if (stackoff.getItem() instanceof ParryItem) {
-              pPlayer.getCooldowns().removeCooldown(stackoff.getItem());
-          }
       }
       if (!pLevel.isClientSide()) {
           if (pLevel instanceof ServerLevel serverLevel) {
@@ -156,6 +147,19 @@ public class ParryItem extends Item{
               handler.start();
           }
           pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), ModSounds.PARRY_DEFLECT.get(), SoundSource.MASTER, 1f, 1f);
+      }
+
+      ItemStack stackmain = pPlayer.getItemInHand(InteractionHand.MAIN_HAND);
+      ItemStack stackoff = pPlayer.getItemInHand(InteractionHand.OFF_HAND);
+
+      if (stackmain.getItem() instanceof ParryItem) {
+          pPlayer.getCooldowns().removeCooldown(stackmain.getItem());
+          pPlayer.sendSystemMessage(Component.literal("I just reset ur cooldown of the item in ur main hand"));
+      }
+
+      if (stackoff.getItem() instanceof ParryItem) {
+          pPlayer.getCooldowns().removeCooldown(stackoff.getItem());
+          pPlayer.sendSystemMessage(Component.literal("I just reset ur cooldown of the item in ur off hand"));
       }
   }
   
