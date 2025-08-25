@@ -26,7 +26,11 @@ public class FireItem extends Item {
   public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
     if(pLevel.isClientSide()) {
       Vec3 lookVec = pPlayer.getLookAngle();
-      pLevel.addParticle(ParticleTypes.FLAME, pPlayer.getX() + lookVec.x(), pPlayer.getY()+ lookVec.y() + pPlayer.getEyeHeight(), pPlayer.getZ()+ lookVec.z(), 0.1*lookVec.x(), 0.1*lookVec.y(), 0.1*lookVec.z());
+      for (double theta = 75.0; theta <106.0; theta++) {
+        for (double phi = 0.0; phi <90.0; phi++) {
+          pLevel.addParticle(ParticleTypes.FLAME, pPlayer.getX() + lookVec.x(), pPlayer.getY()+ lookVec.y() + pPlayer.getEyeHeight(), pPlayer.getZ()+ lookVec.z(), (Math.sin(Math.toRadians(theta))*Math.cos(Math.toRadians(phi))),  Math.cos(Math.toRadians(theta)), (Math.sin(Math.toRadians(theta))*Math.sin(Math.toRadians(phi))));
+        }
+      }
     }
     return InteractionResultHolder.pass(pPlayer.getItemInHand(pUsedHand));
   }
